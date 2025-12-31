@@ -1,0 +1,5 @@
+[
+  {"id": 1, "code": "CSE101", "title": "Introduction to Programming", "credits": 3, "instructor": "Dr. A"},
+  {"id": 2, "code": "CSE201", "title": "Data Structures", "credits": 3, "instructor": "Dr. B"},
+  {"id": 3, "code": "CSE301", "title": "Databases", "credits": 3, "instructor": "Dr. C"}
+]
