@@ -1,4 +1,7 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
 from typing import List
 from models import Course, SelectionRequest, SelectionResponse
 import json
@@ -6,7 +9,11 @@ from pathlib import Path
 
 app = FastAPI(title="BRACU Course Selector")
 
+# Serve static files and templates
 BASE = Path(__file__).parent
+app.mount("/static", StaticFiles(directory=BASE / "static"), name="static")
+templates = Jinja2Templates(directory=BASE / "templates")
+
 COURSES_FILE = BASE / "courses.json"
 SELECTIONS_FILE = BASE / "selections.json"
 
@@ -15,6 +22,11 @@ def load_courses():
 		return []
 	with COURSES_FILE.open("r", encoding="utf-8") as f:
 		return json.load(f)
+
+
+@app.get("/", response_class=HTMLResponse)
+def home(request: Request):
+	return templates.TemplateResponse("index.html", {"request": request})
 
 @app.get("/courses", response_model=List[Course])
 def list_courses():
