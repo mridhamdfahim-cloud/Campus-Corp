@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "code": "CSE",
+    "title": "Bachelor of Science in Computer Science & Engineering (CSE)",
+    "overview": "A demanding 136-credit program that builds strong foundations in algorithms, systems, AI, and software engineering.",
+    "highlights": [
+      "Strong theoretical and practical training",
+      "Opportunities in AI, cybersecurity, robotics, data science",
+      "Industry links, hackathons, internships"
+    ],
+    "structure": "Program core and electives spanning programming, data structures, algorithms, systems, databases, networks, AI and advanced topics.",
+    "contact": {
+      "department": "Department of Computer Science and Engineering",
+      "email": "info@bracu.ac.bd",
+      "phone": "+88 09638464646"
+    },
+    "detailed_description": "With this degree, students will establish a strong foundation in fundamental computer science ideas, studying everything from network design and operating systems to programming design, data structures, and algorithms, as well as creating the future-defining technologies. The CSE graduates will possess essential skills required for computing careers, master theoretical ideas, and develop practical skills for industry and research."
+  }
+]

@@ -16,12 +16,51 @@ templates = Jinja2Templates(directory=BASE / "templates")
 
 COURSES_FILE = BASE / "courses.json"
 SELECTIONS_FILE = BASE / "selections.json"
+PROGRAMS_FILE = BASE / "programs.json"
+APPLICATIONS_FILE = BASE / "applications.json"
 
 def load_courses():
 	if not COURSES_FILE.exists():
 		return []
 	with COURSES_FILE.open("r", encoding="utf-8") as f:
 		return json.load(f)
+
+
+def load_programs():
+	if not PROGRAMS_FILE.exists():
+		return []
+	with PROGRAMS_FILE.open("r", encoding="utf-8") as f:
+		return json.load(f)
+
+
+@app.get("/programs")
+def programs_list():
+	return load_programs()
+
+
+@app.get("/programs/{program_id}")
+def program_detail(program_id: int):
+	progs = load_programs()
+	for p in progs:
+		if p.get("id") == program_id:
+			return p
+	raise HTTPException(status_code=404, detail="Program not found")
+
+
+@app.post("/apply")
+def apply_program(payload: dict):
+	# payload expected: {"program_id": int, "name": str, "email": str, "message": str}
+	apps = []
+	if APPLICATIONS_FILE.exists():
+		try:
+			with APPLICATIONS_FILE.open("r", encoding="utf-8") as f:
+				apps = json.load(f)
+		except json.JSONDecodeError:
+			apps = []
+	apps.append(payload)
+	with APPLICATIONS_FILE.open("w", encoding="utf-8") as f:
+		json.dump(apps, f, indent=2)
+	return {"message": "Application received", "application": payload}
 
 
 @app.get("/", response_class=HTMLResponse)
