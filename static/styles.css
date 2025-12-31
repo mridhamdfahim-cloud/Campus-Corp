@@ -1,0 +1,8 @@
+body { font-family: Arial, sans-serif; background:#f7fbff; color:#111 }
+.container { max-width:720px; margin:40px auto; padding:20px; background:#fff; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.05) }
+ul { list-style:none; padding:0 }
+li { padding:8px 0; border-bottom:1px solid #eee }
+button { margin-left:12px; padding:6px 10px }
+.message { margin-top:16px; padding:10px; border-radius:6px }
+.message.success { background:#e6ffed; color:#135e2b }
+.message.error { background:#ffecec; color:#7a0b0b }
