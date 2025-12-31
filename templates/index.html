@@ -3,15 +3,168 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>BRACU Course Selector</title>
+    <title>BRACU Course & Program Selector</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link rel="stylesheet" href="/static/styles.css" />
   </head>
-  <body>
-    <div class="container">
-      <h1>BRACU Course Selector</h1>
-      <div id="courses"></div>
-      <div id="message" class="message"></div>
-    </div>
+  <body class="bg-slate-50 text-slate-900">
+    <header class="bg-white shadow-sm">
+      <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+        <div class="flex items-center gap-4">
+          <div class="w-10 h-10 bg-blue-700 rounded flex items-center justify-center text-white font-bold">BR</div>
+          <div>
+            <div class="text-lg font-semibold">BRAC University</div>
+            <div class="text-sm text-slate-500">Course & Program Selector</div>
+          </div>
+        </div>
+        <nav class="hidden md:flex gap-4 text-sm text-slate-600">
+          <a href="#" class="hover:text-slate-900">Home</a>
+          <a href="#programs" class="hover:text-slate-900">Programs</a>
+          <a href="#apply" class="hover:text-slate-900">Apply Now</a>
+          <a href="#contact" class="hover:text-slate-900">Contact</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 py-8" x-data="app()" x-init="init()">
+      <div class="grid md:grid-cols-3 gap-6">
+        <aside class="md:col-span-1 bg-white rounded shadow p-4">
+          <h2 class="font-semibold text-lg">Programs</h2>
+          <input x-model="q" @input="filter()" placeholder="Search programs" class="w-full mt-2 p-2 border rounded" />
+          <ul class="mt-4 space-y-2">
+            <template x-for="p in filteredPrograms" :key="p.id">
+              <li class="p-2 rounded hover:bg-slate-50 cursor-pointer" @click="selectProgram(p)">
+                <div class="font-medium" x-text="p.title"></div>
+                <div class="text-xs text-slate-500" x-text="p.code"></div>
+              </li>
+            </template>
+          </ul>
+        </aside>
+
+        <section class="md:col-span-2">
+          <div class="bg-white rounded shadow p-6">
+            <div x-show="!selectedProgram">
+              <h2 class="text-xl font-semibold">Welcome</h2>
+              <p class="mt-2 text-slate-600">Browse programs on the left and view details here. You may also select courses or apply to programs.</p>
+            </div>
+
+            <div x-show="selectedProgram" x-cloak>
+              <div class="flex items-center justify-between">
+                <div>
+                  <h2 class="text-2xl font-bold" x-text="selectedProgram.title"></h2>
+                  <div class="text-sm text-slate-500" x-text="selectedProgram.code"></div>
+                </div>
+                <div class="space-x-2">
+                  <button @click="openApply()" class="px-4 py-2 bg-blue-600 text-white rounded">Apply</button>
+                </div>
+              </div>
+
+              <div class="mt-4 text-slate-700" x-text="selectedProgram.detailed_description"></div>
+
+              <h3 class="mt-6 font-semibold">Program Highlights</h3>
+              <ul class="list-disc pl-6 mt-2 text-slate-600">
+                <template x-for="h in selectedProgram.highlights" :key="h">
+                  <li x-text="h"></li>
+                </template>
+              </ul>
+
+              <h3 class="mt-6 font-semibold">Related Courses</h3>
+              <div class="mt-2">
+                <template x-if="courses.length">
+                  <ul class="space-y-2">
+                    <template x-for="c in courses" :key="c.id">
+                      <li class="flex items-center justify-between p-2 border rounded">
+                        <div>
+                          <div class="font-medium" x-text="c.code + ' — ' + c.title"></div>
+                          <div class="text-xs text-slate-500" x-text="c.instructor + ' · ' + c.credits + ' cr'"></div>
+                        </div>
+                        <button @click="selectCourse(c.id)" class="px-3 py-1 bg-emerald-600 text-white rounded">Select</button>
+                      </li>
+                    </template>
+                  </ul>
+                </template>
+                <div x-show="!courses.length" class="text-slate-500">No courses available.</div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- Apply Modal -->
+      <div x-show="showApply" x-cloak class="fixed inset-0 bg-black/40 flex items-center justify-center">
+        <div @click.away="closeApply()" class="bg-white w-full max-w-xl rounded p-6">
+          <h3 class="text-lg font-semibold">Apply to <span x-text="selectedProgram?.code"></span></h3>
+          <form @submit.prevent="submitApplication" class="mt-4 space-y-3">
+            <div>
+              <label class="text-sm">Name</label>
+              <input x-model="applicant.name" required class="w-full p-2 border rounded" />
+            </div>
+            <div>
+              <label class="text-sm">Email</label>
+              <input x-model="applicant.email" type="email" required class="w-full p-2 border rounded" />
+            </div>
+            <div>
+              <label class="text-sm">Message</label>
+              <textarea x-model="applicant.message" class="w-full p-2 border rounded"></textarea>
+            </div>
+            <div class="flex justify-end gap-2">
+              <button type="button" @click="closeApply()" class="px-4 py-2">Cancel</button>
+              <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded">Submit Application</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div x-show="message" x-text="message" class="mt-4"></div>
+    </main>
+
     <script src="/static/app.js"></script>
+
+    <script>
+      function app(){
+        return {
+          programs: [],
+          filteredPrograms: [],
+          courses: [],
+          selectedProgram: null,
+          showApply: false,
+          applicant: {name:'', email:'', message:''},
+          q: '',
+          message: null,
+          async init(){
+            try{
+              const p = await fetch('/programs').then(r=>r.json());
+              this.programs = p;
+              this.filteredPrograms = p;
+              this.courses = await fetch('/courses').then(r=>r.json());
+            }catch(e){ console.error(e); this.message='Failed to load data.' }
+          },
+          filter(){
+            const q = this.q.toLowerCase();
+            this.filteredPrograms = this.programs.filter(p=> p.title.toLowerCase().includes(q) || p.code.toLowerCase().includes(q))
+          },
+          selectProgram(p){ this.selectedProgram = p; /* keep courses as-is or filter if needed */ },
+          openApply(){ if(!this.selectedProgram){ this.message='Select a program first.'; return } this.showApply=true },
+          closeApply(){ this.showApply=false; this.applicant={name:'',email:'',message:''} },
+          async submitApplication(){
+            const payload = { program_id: this.selectedProgram.id, name: this.applicant.name, email: this.applicant.email, message: this.applicant.message };
+            try{
+              const res = await window.api.applyProgram(payload);
+              this.message = res.message || 'Application submitted.';
+              this.closeApply();
+            }catch(e){ this.message='Failed to submit application.' }
+          },
+          async selectCourse(courseId){
+            const name = prompt('Enter your name to select this course:');
+            if(!name) return;
+            try{
+              const res = await window.api.selectCourse(courseId, name);
+              this.message = res.message || 'Course selected.';
+            }catch(e){ this.message = 'Failed to select course.' }
+          }
+        }
+      }
+    </script>
   </body>
 </html>

@@ -1,8 +1,14 @@
 body { font-family: Arial, sans-serif; background:#f7fbff; color:#111 }
 .container { max-width:720px; margin:40px auto; padding:20px; background:#fff; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.05) }
 ul { list-style:none; padding:0 }
-li { padding:8px 0; border-bottom:1px solid #eee }
 button { margin-left:12px; padding:6px 10px }
 .message { margin-top:16px; padding:10px; border-radius:6px }
 .message.success { background:#e6ffed; color:#135e2b }
 .message.error { background:#ffecec; color:#7a0b0b }
+
+body { font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; background:#f8fafc; color:#0f172a }
+.container { max-width:720px; margin:40px auto; padding:20px; background:#fff; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.05) }
+/* small helpers retained for non-Tailwind slots */
+.message { margin-top:16px; padding:10px; border-radius:6px }
+.message.success { background:#ecfdf5; color:#065f46 }
+.message.error { background:#fff1f2; color:#7f1d1d }
