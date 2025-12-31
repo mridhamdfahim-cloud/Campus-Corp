@@ -3,52 +3,118 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>BRACU Course Selector</title>
+    <title>BRACU — Programs & Courses</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link rel="stylesheet" href="/static/styles.css" />
   </head>
-  <body>
-    <header class="relative overflow-hidden">
-      <div class="absolute -z-10 inset-0 bg-gradient-to-r from-[#0f172a] via-[#0b1220] to-[#061028] opacity-95"></div>
-      <div class="absolute -z-20 inset-0 pointer-events-none">
-        <svg class="w-full h-full" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <linearGradient id="g1" x1="0" x2="1">
-              <stop offset="0%" stop-color="#0ea5e9" stop-opacity="0.12" />
-              <stop offset="100%" stop-color="#7c3aed" stop-opacity="0.08" />
-            </linearGradient>
-          </defs>
-          <rect width="100%" height="100%" fill="url(#g1)" />
-        </svg>
-      </div>
-      <div class="max-w-7xl mx-auto px-6 py-8 flex items-center justify-between">
-        <div class="flex items-center gap-4">
-          <div class="w-12 h-12 bg-gradient-to-br from-indigo-500 to-cyan-400 rounded-full flex items-center justify-center text-white font-bold shadow-lg">BR</div>
-          <div>
-            <div class="text-white text-xl font-extrabold tracking-tight">BRAC University</div>
-            <div class="text-sky-200 text-sm">Futuristic Course & Program Selector</div>
-          </div>
+  <body class="min-h-screen bg-gradient-to-br from-slate-900 via-indigo-900 to-slate-800 text-slate-100">
+    <header class="max-w-7xl mx-auto p-6 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-12 h-12 rounded-full bg-gradient-to-br from-indigo-400 to-cyan-400 flex items-center justify-center font-bold text-slate-900">BR</div>
+        <div>
+          <div class="text-xl font-extrabold">BRAC University</div>
+          <div class="text-sm text-sky-300">Programs & Course selector</div>
         </div>
-        <nav class="hidden md:flex gap-6 text-sm text-sky-100">
-          <a href="#" class="hover:underline">Home</a>
-          <a href="#programs" class="hover:underline">Programs</a>
-          <a href="#apply" class="hover:underline">Apply Now</a>
-          <a href="#contact" class="hover:underline">Contact</a>
-        </nav>
       </div>
+      <nav class="hidden sm:flex gap-4 text-sm text-sky-200">
+        <a href="#" class="hover:underline">Home</a>
+        <a href="#programs" class="hover:underline">Programs</a>
+        <a href="#apply" class="hover:underline">Apply</a>
+      </nav>
     </header>
-    <div class="container">
-      <h1 class="text-3xl font-bold text-white">BRACU Course Selector</h1>
-      <div id="courses"></div>
-      <div id="message" class="message"></div>
-    </div>
-    <script src="/static/app.js"></script>
-  </body>
-</html>
-    <div class="container">
-      <h1>BRACU Course Selector</h1>
-      <div id="courses"></div>
-      <div id="message" class="message"></div>
-    </div>
+
+    <main class="max-w-7xl mx-auto p-6" x-data="app()" x-init="init()">
+      <div class="grid lg:grid-cols-4 gap-6">
+        <aside class="lg:col-span-1 glass p-4">
+          <div class="flex items-center gap-3">
+            <input x-model="q" @input="filter()" placeholder="Search programs..." class="w-full p-2 rounded bg-transparent border border-white/10 text-white placeholder:text-sky-300" />
+          </div>
+          <div class="mt-4 space-y-3 max-h-[60vh] overflow-auto">
+            <template x-for="p in filteredPrograms" :key="p.id">
+              <div @click="selectProgram(p)" class="p-3 rounded-lg hover:bg-white/5 cursor-pointer">
+                <div class="font-semibold" x-text="p.title"></div>
+                <div class="text-xs text-sky-300" x-text="p.code"></div>
+              </div>
+            </template>
+            <div x-show="!filteredPrograms.length" class="text-sky-300">No programs found.</div>
+          </div>
+        </aside>
+
+        <section class="lg:col-span-3">
+          <div class="glass p-6">
+            <div x-show="!selectedProgram">
+              <h1 class="text-2xl font-extrabold">Welcome to BRACU Programs</h1>
+              <p class="mt-2 text-sky-300">Select a program to view details and related courses. Use the Apply button to submit an application.</p>
+            </div>
+
+            <div x-show="selectedProgram" x-cloak>
+              <div class="flex items-start justify-between">
+                <div>
+                  <h2 class="text-2xl font-bold" x-text="selectedProgram.title"></h2>
+                  <div class="text-sm text-sky-300" x-text="selectedProgram.code"></div>
+                </div>
+                <div>
+                  <button @click="openApply()" class="px-4 py-2 rounded bg-gradient-to-br from-emerald-400 to-cyan-400 text-slate-900 font-semibold">Apply</button>
+                </div>
+              </div>
+
+              <div class="mt-4 text-sky-200" x-text="selectedProgram.detailed_description"></div>
+
+              <h3 class="mt-6 font-semibold">Highlights</h3>
+              <ul class="list-disc pl-6 mt-2 text-sky-300">
+                <template x-for="h in selectedProgram.highlights" :key="h">
+                  <li x-text="h"></li>
+                </template>
+              </ul>
+
+              <h3 class="mt-6 font-semibold">Related Courses</h3>
+              <div class="mt-3 grid sm:grid-cols-2 gap-3">
+                <template x-for="c in courses" :key="c.id">
+                  <div class="p-3 rounded bg-white/5 flex items-center justify-between">
+                    <div>
+                      <div class="font-medium" x-text="c.code + ' — ' + c.title"></div>
+                      <div class="text-xs text-sky-300" x-text="c.instructor + ' · ' + c.credits + ' cr'"></div>
+                    </div>
+                    <div>
+                      <button @click="selectCourse(c.id)" class="px-3 py-1 rounded bg-indigo-500 text-white">Select</button>
+                    </div>
+                  </div>
+                </template>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- Apply modal -->
+      <div x-show="showApply" x-cloak class="fixed inset-0 bg-black/50 flex items-center justify-center">
+        <div @click.away="closeApply()" class="w-full max-w-xl p-6 glass rounded">
+          <h3 class="text-lg font-semibold">Apply to <span x-text="selectedProgram?.title"></span></h3>
+          <form @submit.prevent="submitApplication" class="mt-4 space-y-3">
+            <div>
+              <label class="text-sm">Name</label>
+              <input x-model="applicant.name" required class="w-full p-2 rounded bg-transparent border border-white/10" />
+            </div>
+            <div>
+              <label class="text-sm">Email</label>
+              <input x-model="applicant.email" type="email" required class="w-full p-2 rounded bg-transparent border border-white/10" />
+            </div>
+            <div>
+              <label class="text-sm">Message</label>
+              <textarea x-model="applicant.message" class="w-full p-2 rounded bg-transparent border border-white/10"></textarea>
+            </div>
+            <div class="flex justify-end gap-2">
+              <button type="button" @click="closeApply()" class="px-4 py-2">Cancel</button>
+              <button type="submit" class="px-4 py-2 bg-gradient-to-br from-indigo-500 to-pink-500 text-white rounded">Submit</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div x-show="message" x-text="message" class="mt-4"></div>
+    </main>
+
     <script src="/static/app.js"></script>
   </body>
 </html>
