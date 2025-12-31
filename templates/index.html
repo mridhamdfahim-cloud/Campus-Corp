@@ -7,6 +7,43 @@
     <link rel="stylesheet" href="/static/styles.css" />
   </head>
   <body>
+    <header class="relative overflow-hidden">
+      <div class="absolute -z-10 inset-0 bg-gradient-to-r from-[#0f172a] via-[#0b1220] to-[#061028] opacity-95"></div>
+      <div class="absolute -z-20 inset-0 pointer-events-none">
+        <svg class="w-full h-full" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="g1" x1="0" x2="1">
+              <stop offset="0%" stop-color="#0ea5e9" stop-opacity="0.12" />
+              <stop offset="100%" stop-color="#7c3aed" stop-opacity="0.08" />
+            </linearGradient>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#g1)" />
+        </svg>
+      </div>
+      <div class="max-w-7xl mx-auto px-6 py-8 flex items-center justify-between">
+        <div class="flex items-center gap-4">
+          <div class="w-12 h-12 bg-gradient-to-br from-indigo-500 to-cyan-400 rounded-full flex items-center justify-center text-white font-bold shadow-lg">BR</div>
+          <div>
+            <div class="text-white text-xl font-extrabold tracking-tight">BRAC University</div>
+            <div class="text-sky-200 text-sm">Futuristic Course & Program Selector</div>
+          </div>
+        </div>
+        <nav class="hidden md:flex gap-6 text-sm text-sky-100">
+          <a href="#" class="hover:underline">Home</a>
+          <a href="#programs" class="hover:underline">Programs</a>
+          <a href="#apply" class="hover:underline">Apply Now</a>
+          <a href="#contact" class="hover:underline">Contact</a>
+        </nav>
+      </div>
+    </header>
+    <div class="container">
+      <h1 class="text-3xl font-bold text-white">BRACU Course Selector</h1>
+      <div id="courses"></div>
+      <div id="message" class="message"></div>
+    </div>
+    <script src="/static/app.js"></script>
+  </body>
+</html>
     <div class="container">
       <h1>BRACU Course Selector</h1>
       <div id="courses"></div>
